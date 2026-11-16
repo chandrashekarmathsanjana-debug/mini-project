@@ -1,0 +1,48 @@
+import os
+import sqlite3
+
+try:
+  # Store it in the clean /tmp system folder to bypass local storage glitches
+  db_path = "/tmp/trip_planner_clean.db"
+  if os.path.exists(db_path):
+    os.remove(db_path)
+
+  conn = sqlite3.connect(db_path)
+  c = conn.cursor()
+
+  c.execute(
+      "CREATE TABLE users (id INTEGER PRIMARY KEY, username TEXT, email TEXT"
+      " UNIQUE, password TEXT)"
+  )
+  c.execute(
+      "CREATE TABLE trips (id INTEGER PRIMARY KEY, title TEXT, created_by"
+      " INTEGER)"
+  )
+  c.execute("CREATE TABLE trip_members (trip_id INTEGER, user_id INTEGER)")
+  c.execute(
+      "CREATE TABLE itinerary (id INTEGER PRIMARY KEY, trip_id INTEGER,"
+      " day_number INTEGER, activity TEXT, time TEXT)"
+  )
+  c.execute(
+      "CREATE TABLE expenses (id INTEGER PRIMARY KEY, trip_id INTEGER,"
+      " paid_by INTEGER, amount REAL, description TEXT)"
+  )
+
+  c.execute(
+      "INSERT INTO users (username, email, password) VALUES ('alex', 'a@a.com',"
+      " '123')"
+  )
+  c.execute("INSERT INTO trips (title, created_by) VALUES ('Goa Trip', 1)")
+  c.execute("INSERT INTO trip_members (trip_id, user_id) VALUES (1, 1)")
+  c.execute(
+      "INSERT INTO itinerary (trip_id, day_number, activity, time) VALUES (1,"
+      " 1, 'Beach', '10 AM')"
+  )
+  c.execute("DELETE FROM trip_members WHERE trip_id = 1 AND user_id = 1")
+
+  conn.commit()
+  conn.close()
+  print("SUCCESS WITH TMP PATH! 🚀")
+
+except Exception as e:
+  print(f"EXACT ERROR: {e}")
