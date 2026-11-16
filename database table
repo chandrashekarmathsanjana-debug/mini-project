@@ -1,0 +1,23 @@
+import os
+import sqlite3
+
+# Delete the old database file if it's stuck
+if os.path.exists('trip_planner.db'):
+    os.remove('trip_planner.db')
+    print("Old database cleared!")
+
+# Now create a fresh database and a trip table
+conn = sqlite3.connect('trip_planner.db')
+cursor = conn.cursor()
+
+cursor.execute('''
+    CREATE TABLE trips (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT
+    );
+''')
+
+conn.commit()
+conn.close()
+print("Fresh database and table created successfully!")
